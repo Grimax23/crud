@@ -6,51 +6,53 @@ TODO
 */
 
 import com.example.crud.model.User;
+import com.example.crud.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    //curl -X GET http://localhost:8080/users/1
+    private final UserRepository users;
+
+    public UserController(UserRepository users) {
+        this.users = users;
+    }
+
+    @PostMapping("/users/new")
+    public User create(@RequestBody User user) {
+        log.info("create");
+        return this.users.save(user);
+    }
+
     @GetMapping("/users/{id}")
-    public User get(@PathVariable int id) {
+    public Optional<User> get(@PathVariable int id) {
         log.info("get {}", id);
-        //TODO return service.get(userId);
-        return null;
+        return this.users.findById(id);
+    }
+
+    @PutMapping("/users/{id}/edit")
+    public String update(@RequestBody User user, @PathVariable int id) {
+        log.info("update {} with id={}", user, id);
+        user.setId(id);
+        this.users.save(user);
+        return "redirect:/users/{id}";
     }
 
     @DeleteMapping("/users/{id}")
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
-        //TODO service.delete(id);
-    }
-
-    @PutMapping(value = "/users/{id}/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@Valid User user, @PathVariable int id) {
-        log.info("update {} with id={}", user, id);
-        //TODO service.update(user, userId);
-    }
-
-    @PostMapping("/users/new")
-    public User create() {
-        log.info("create");
-        //TODO service.update(user, userId);
-        return null;
+        this.users.deleteById(id);
     }
 
     @GetMapping("/users")
-    public User getAll() {
+    public List<User> getAll() {
         log.info("getAll");
-        //TODO return service.getAll();
-        return null;
+        return this.users.findAll();
     }
 }
