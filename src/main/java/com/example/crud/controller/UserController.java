@@ -9,14 +9,16 @@ import com.example.crud.model.User;
 import com.example.crud.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final UserRepository users;
 
@@ -24,35 +26,31 @@ public class UserController {
         this.users = users;
     }
 
-    @PostMapping("/users/new")
-    public User create(@RequestBody User user) {
-        log.info("create");
-        return this.users.save(user);
+    @PostMapping()
+    public User create(@RequestBody User user, BindingResult result) {
+        final User savedUser = this.users.save(user);
+        return savedUser;
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public Optional<User> get(@PathVariable int id) {
-        log.info("get {}", id);
         return this.users.findById(id);
     }
 
-    @PutMapping("/users/{id}/edit")
+    @PutMapping("/{id}/edit")
     public String update(@RequestBody User user, @PathVariable int id) {
-        log.info("update {} with id={}", user, id);
         user.setId(id);
         this.users.save(user);
         return "redirect:/users/{id}";
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
-        log.info("delete {}", id);
         this.users.deleteById(id);
     }
 
-    @GetMapping("/users")
+    @GetMapping()
     public List<User> getAll() {
-        log.info("getAll");
         return this.users.findAll();
     }
 }

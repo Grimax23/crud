@@ -8,17 +8,17 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @Column(name = "first_name")
-    //@NotEmpty
+    @NotEmpty
     private String firstName;
 
     @Column(name = "last_name")
-    //@NotEmpty
+    @NotEmpty
     private String lastName;
 
     public Integer getId() {
@@ -44,4 +44,9 @@ public class User {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    public boolean isNew() {
+        return this.id == null;
+    }
+
 }
