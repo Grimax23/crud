@@ -22,7 +22,7 @@ public class UserController {
         this.repository = repository;
     }
 
-    @PostMapping()
+    @PostMapping(produces = "application/json")
     public User create(@RequestBody User user) {
         final User savedUser = repository.save(user);
         return savedUser;

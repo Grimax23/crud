@@ -7,9 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Collections;
 
@@ -21,7 +25,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(UserController.class)
+//@WebMvcTest(UserController.class)
+@SpringBootTest
 class UserControllerTest {
 
     private static final int TEST_USER_ID = 1;
@@ -29,14 +34,18 @@ class UserControllerTest {
     private User george;
     private User joe;
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private WebApplicationContext wac;
 
     @BeforeEach
     void setup() {
+        repository.deleteAll();
+
         george = new User();
         george.setId(TEST_USER_ID);
         george.setFirstName("George");
@@ -47,9 +56,12 @@ class UserControllerTest {
         joe.setFirstName("Joe");
         joe.setLastName("Bloggs");
 
-        given(repository.findById(TEST_USER_ID)).willReturn(java.util.Optional.ofNullable(george));
-        given(repository.save(ArgumentMatchers.any())).willReturn(joe);
-        given(repository.findAll()).willReturn(Collections.singletonList(george));
+        repository.save(george);
+
+        // given(repository.findById(TEST_USER_ID)).willReturn(java.util.Optional.ofNullable(george));
+        // given(repository.save(ArgumentMatchers.any())).willReturn(joe);
+        // given(repository.findAll()).willReturn(Collections.singletonList(george));
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
     @Test
