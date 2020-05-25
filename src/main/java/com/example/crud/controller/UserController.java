@@ -7,12 +7,9 @@ TODO
 
 import com.example.crud.model.User;
 import com.example.crud.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,31 +23,32 @@ public class UserController {
         this.users = users;
     }
 
-    @PostMapping()
-    public User create(@RequestBody User user, BindingResult result) {
-        final User savedUser = this.users.save(user);
-        return savedUser;
-    }
-
     @GetMapping("/{id}")
     public Optional<User> get(@PathVariable int id) {
         return this.users.findById(id);
     }
 
-    @PutMapping("/{id}/edit")
-    public String update(@RequestBody User user, @PathVariable int id) {
+    @GetMapping()
+    public List<User> getAll() {
+        return users.findAll();
+    }
+
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public User create(@RequestBody User user) {
+        return users.save(user);
+    }
+
+    @PutMapping("/{id}")
+    public User update(@PathVariable int id, @RequestBody User user) {
         user.setId(id);
-        this.users.save(user);
-        return "redirect:/users/{id}";
+        return users.save(user);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
-        this.users.deleteById(id);
+        users.deleteById(id);
     }
 
-    @GetMapping()
-    public List<User> getAll() {
-        return this.users.findAll();
-    }
 }

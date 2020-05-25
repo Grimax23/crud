@@ -4,8 +4,5 @@ target/
 *.iws
 *.iml
 *.ipr
-
-### VS Code ###
-.vscode/
 .tmp
 .log

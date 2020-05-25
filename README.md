@@ -35,7 +35,7 @@ mvn spring-boot:run
 
 ##### Test a REST API with curl
 ````
-curl -i -X POST http://localhost:8080/users -H "Content-Type: application/json"  -d "{"""firstName""":"""firstName""","""lastName""":"""lastName"""}"
+curl -i -X POST http://localhost:8080/users -H "Content-Type: application/json"  -d "{\"firstName\":\"firstName\",\"lastName\":\"lastName\"}"
 
 curl -i -X GET http://localhost:8080/users
 
