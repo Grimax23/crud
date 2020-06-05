@@ -1,17 +1,21 @@
 package com.example.crud.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
-@Data
+
 @Entity
 @Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue
-    private Integer id;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class User extends BaseEntity{
 
     @Column(name = "first_name")
     @NotEmpty
@@ -21,8 +25,9 @@ public class User {
     @NotEmpty
     private String lastName;
 
-    public boolean isNew() {
-        return this.id == null;
-    }
+/*
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Document> documents;
+*/
 
 }

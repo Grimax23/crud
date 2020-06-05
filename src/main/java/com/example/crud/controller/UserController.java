@@ -25,7 +25,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public Optional<User> get(@PathVariable int id) {
-        return this.users.findById(id);
+        return users.findById(id);
     }
 
     @GetMapping()
