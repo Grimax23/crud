@@ -7,8 +7,10 @@ TODO
 
 import com.example.crud.model.User;
 import com.example.crud.repository.UserRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,8 +26,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public Optional<User> get(@PathVariable int id) {
-        return users.findById(id);
+    public User get(@PathVariable int id) {
+        Optional<User> user = users.findById(id);
+        if (!user.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found");
+        }
+        return user.get();
     }
 
     @GetMapping()
@@ -48,7 +54,11 @@ public class UserController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
-        users.deleteById(id);
+        try {
+            users.deleteById(id);
+        }catch (EmptyResultDataAccessException ex){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found", ex);
+        }
     }
 
 }

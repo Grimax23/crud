@@ -56,22 +56,25 @@ class UserIntegrationTest {
 
     @Test
     void testGet() throws Exception {
-        mockMvc.perform(get("/users/{id}", george_id)).andDo(print())
+        mockMvc.perform(get("/users/{id}", george_id))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.lastName").value(george.getLastName()))
                 .andExpect(jsonPath("$.firstName").value(george.getFirstName()));
     }
 
-/*    @Test
-    public void testUserIsNotFound() throws Exception {
+    @Test
+    public void testGetNotFound() throws Exception {
         mockMvc.perform(get("/users/{id}", 666))
+                .andDo(print())
                 .andExpect(status().isNotFound());
-    }*/
+    }
 
     @Test
     void testGetAll() throws Exception {
-        mockMvc.perform(get("/users")).andDo(print())
+        mockMvc.perform(get("/users"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -83,7 +86,8 @@ class UserIntegrationTest {
     @Test
     void tesCreateSuccess() throws Exception {
         mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).characterEncoding("UTF-8")
-                .content(om.writeValueAsString(joe))).andDo(print())
+                .content(om.writeValueAsString(joe)))
+                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.lastName").value(joe.getLastName()))
@@ -93,7 +97,8 @@ class UserIntegrationTest {
     @Test
     void testUpdate() throws Exception {
         mockMvc.perform(put("/users/{id}", george_id).contentType(MediaType.APPLICATION_JSON).characterEncoding("UTF-8")
-                .content(om.writeValueAsString(joe))).andDo(print())
+                .content(om.writeValueAsString(joe)))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.lastName").value(joe.getLastName()))
@@ -102,15 +107,15 @@ class UserIntegrationTest {
 
     @Test
     void testDelete() throws Exception {
-        mockMvc.perform(delete("/users/{id}", george_id)).andDo(print())
+        mockMvc.perform(delete("/users/{id}", george_id))
+                .andDo(print())
                 .andExpect(status().isNoContent());
     }
 
-/*
     @Test
-    public void testUserToDeleteIsNotFound() throws Exception {
-        mockMvc.perform(delete("/users/{id}", 666)).andDo(print())
+    public void testDeleteNotFound() throws Exception {
+        mockMvc.perform(delete("/users/{id}", 666))
+                .andDo(print())
                 .andExpect(status().isNotFound());
     }
-*/
 }
