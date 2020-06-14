@@ -15,22 +15,41 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class UserRepositoryTest {
 
     @Autowired
-    protected UserRepository repository;
+    protected UserRepository userRepository;
+/*
+    @Autowired
+    protected DocumentRepository documentRepository;
+*/
 
     private User george;
     private User joe;
     private Integer george_id;
     private Integer joe_id;
 
+/*
+    public static final List<Document> DOCUMENTS = Arrays.asList(
+            new Document("Недействительный документ", "123", LocalDate.of(2020, 2, 27)),
+            new Document("Старый документ", "456", LocalDate.of(2019, 2, 28)),
+            new Document("Действующий документ", "789", LocalDate.of(2021, 4, 1)),
+            new Document("Действующий документ", "321", LocalDate.of(2020, 3, 5))
+    );
+*/
+
     @BeforeEach
     void setUp() {
-        repository.deleteAll();
+        userRepository.deleteAll();
+//        documentRepository.deleteAll();
+
 
         george = new User();
         george.setFirstName("George");
         george.setLastName("Franklin");
-        repository.save(george);
+//        george.addDocument();Documents(new HashSet(doc1));
+        userRepository.save(george);
         george_id = george.getId();
+
+        //documentRepository.save(doc1);
+
 
         joe = new User();
         joe.setFirstName("Joe");
@@ -39,27 +58,27 @@ class UserRepositoryTest {
 
     @Test
     void getByID() {
-        Optional<User> byId = repository.findById(george_id);
+        Optional<User> byId = userRepository.findById(george_id);
         assertEquals(byId, Optional.ofNullable(george));
     }
 
     @Test
     void getAll() {
-        assertEquals(repository.findAll().size(), 1);
+        assertEquals(userRepository.findAll().size(), 1);
     }
 
     @Test
     void save() {
-        repository.save(joe);
+        userRepository.save(joe);
         joe_id = joe.getId();
-        assertEquals(repository.findAll().size(), 2);
-        assertEquals(repository.findById(george_id), Optional.ofNullable(george));
-        assertEquals(repository.findById(joe_id), Optional.ofNullable(joe));
+        assertEquals(userRepository.findAll().size(), 2);
+        assertEquals(userRepository.findById(george_id), Optional.ofNullable(george));
+        assertEquals(userRepository.findById(joe_id), Optional.ofNullable(joe));
     }
 
     @Test
     void deleteById() {
-        repository.deleteById(george_id);
-        assertEquals(repository.findAll().size(), 0);
+        userRepository.deleteById(george_id);
+        assertEquals(userRepository.findAll().size(), 0);
     }
 }
